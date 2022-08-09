@@ -24,7 +24,7 @@ async function seed() {
     data: {
       message: "I am a root comment",
       userId: kyle.id,
-      postId: post1.id,
+      postId: post2.id,
     },
   })
 
@@ -42,6 +42,13 @@ async function seed() {
       message: "I am another root comment",
       userId: sally.id,
       postId: post1.id,
+    },
+  })
+
+  const like1 = await prisma.like.create({
+    data: {
+      commentId: comment1.id,
+      userId: sally.id
     },
   })
 }
