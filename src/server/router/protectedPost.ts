@@ -46,3 +46,25 @@ export const protectedPostRouter = createProtectedRouter()
       })
     }
   })
+  .mutation("deleteComment", {
+    input: z.object({
+      commentId: z.string(),
+      postId: z.string(),
+    }),
+    async resolve({ input, ctx }) {
+      const res = await ctx.prisma.comment.findUnique({
+        where: { id: input.commentId },
+        select: { userId: true }
+      });
+
+      if (res?.userId !== ctx.session.user.id) {
+        throw new trpc.TRPCError({ code: 'UNAUTHORIZED', message: "You do not have permission to delete this comment" })
+      }
+
+      return await ctx.prisma.comment.delete({
+        where: {
+          id: input.commentId
+        }
+      })
+    }
+  });
