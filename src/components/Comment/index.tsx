@@ -4,6 +4,7 @@ import { CommentList } from "#components/CommentList";
 import { Comment as IComment } from "#types/comment";
 import { trpc } from "#utils/trpc";
 import { HeartIcon, PencilAltIcon, ReplyIcon, TrashIcon } from '@heroicons/react/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/solid';
 import clsx from "clsx";
 import { usePost } from "#hooks/usePost";
 import { useSession } from "next-auth/react";
@@ -53,6 +54,15 @@ export const Comment = ({ comment }: CommentProps) => {
     },
   });
 
+  const toggleCommentLike = trpc.useMutation(['protectedPost.toggleLike'], {
+    async onSuccess() {
+      // Refetches posts after a comment is added
+      await invalidateQueries(['post.getById', ({
+        id: postId
+      })]);
+    },
+  });
+
   const [isReplying, setIsReplying] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [areChildrenHidden, setAreChildrenHidden] = useState(false)
@@ -86,6 +96,15 @@ export const Comment = ({ comment }: CommentProps) => {
     })
   }
 
+  const handleToggleCommentLike = async () => {
+    if (!session) return;
+
+    return await toggleCommentLike.mutateAsync({
+      commentId: id,
+      postId
+    })
+  }
+
   return (
     <>
       <div key={id} className="p-3 md:p-4 border-2 border-purple-100 rounded-lg">
@@ -99,8 +118,8 @@ export const Comment = ({ comment }: CommentProps) => {
           <div className="message">{message}</div>
         )}
         <div className="flex gap-2 mt-2">
-          <IconButton onClick={() => { }} Icon={HeartIcon} aria-label={likedByMe ? "Unlike" : "Like"} color="text-purple-700">
-            {likeCount || 0}
+          <IconButton onClick={handleToggleCommentLike} Icon={likedByMe ? HeartSolidIcon : HeartIcon} aria-label={likedByMe ? "Unlike" : "Like"} color="text-purple-700">
+            {likeCount}
           </IconButton>
           {session && <IconButton onClick={() => setIsReplying(prev => !prev)} Icon={ReplyIcon} aria-label="Reply" isActive={isReplying} color="text-purple-700" />}
           {user.id === session?.user?.id && (
@@ -132,7 +151,7 @@ export const Comment = ({ comment }: CommentProps) => {
             </div>
           </div>
           <button
-            className={clsx('mt-2 p-2 rounded hover:bg-purple-50 hover:transition-colors hover:duration-100 ease-in-out', !areChildrenHidden && "hidden")}
+            className={clsx("relative mt-2 py-2 px-4 rounded text-sm text-white bg-purple-600 hover:bg-purple-400 hover:transition-colors hover:duration-100 ease-in-out", !areChildrenHidden && "hidden")}
             onClick={() => setAreChildrenHidden(false)}
           >
             Show Replies
