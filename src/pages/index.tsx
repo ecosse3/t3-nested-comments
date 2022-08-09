@@ -7,7 +7,6 @@ import { createSSGHelpers } from '@trpc/react/ssg';
 import { appRouter } from "#server/router";
 import { prisma } from "#server/db/client";
 import { Header } from "#components/Header";
-import { HEADER_HEIGHT } from "#styles/consts";
 import { PostCard } from "#components/PostCard";
 
 const Home: NextPage = () => {
@@ -23,7 +22,7 @@ const Home: NextPage = () => {
       </Head>
 
       <Header />
-      <main className={clsx('container max-w-3xl mx-auto flex flex-col items-center justify-center p-4 md:p-0', `min-h-[calc(100vh-${HEADER_HEIGHT}px)]`)}>
+      <main className={clsx('container max-w-3xl mx-auto flex flex-col items-center justify-center p-4 md:p-0 pt-8 md:pt-16')}>
         <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
           List <span className="text-purple-300 drop-shadow-2xl">Posts</span>
         </h1>

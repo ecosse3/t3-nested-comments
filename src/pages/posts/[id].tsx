@@ -11,7 +11,6 @@ import { createSSGHelpers } from '@trpc/react/ssg';
 import { usePost } from "#hooks/usePost";
 import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { HEADER_HEIGHT } from "#styles/consts";
 import superjson from 'superjson';
 
 const Post: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ id }) => {
@@ -56,7 +55,7 @@ const Post: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
       </Head>
 
       <Header />
-      <main className={clsx('container max-w-2xl mx-auto my-8 flex flex-col p-4 md:p-0', `min-h-[calc(100vh-${HEADER_HEIGHT}px)]`)}>
+      <main className={clsx('container max-w-2xl mx-auto my-8 flex flex-col p-4 md:p-0')}>
         <h1 className="text-3xl text-black font-bold">{post.data?.title}</h1>
         <p className="text-md text-black my-4 text-justify">{post.data?.body}</p>
         <h2 className="text-xl text-black font-bold">Comments</h2>
