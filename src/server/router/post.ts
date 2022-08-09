@@ -33,10 +33,29 @@ export const postRouter = createRouter()
                   id: true,
                   name: true
                 }
-              }
-
+              },
+              _count: { select: { likes: true } }
             }
           }
+        }
+      }).then(async post => {
+        const likes = await ctx.prisma.like.findMany({
+          where: {
+            userId: ctx.session?.user?.id,
+            commentId: { in: post?.comments.map(comment => comment.id) },
+          },
+        })
+
+        return {
+          ...post,
+          comments: post?.comments.map(comment => {
+            const { _count, ...commentFields } = comment
+            return {
+              ...commentFields,
+              likedByMe: !!likes.find(like => like.userId === ctx.session?.user?.id),
+              likeCount: _count.likes,
+            }
+          }),
         }
       });
     },

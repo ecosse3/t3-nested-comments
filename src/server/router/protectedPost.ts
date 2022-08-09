@@ -17,6 +17,12 @@ export const protectedPostRouter = createProtectedRouter()
           parentId: input.parentId,
           userId: ctx.session.user.id!
         }
+      }).then(comment => {
+        return {
+          ...comment,
+          likeCount: 0,
+          likedByMe: false,
+        }
       })
     }
   })
@@ -66,5 +72,43 @@ export const protectedPostRouter = createProtectedRouter()
           id: input.commentId
         }
       })
+    }
+  })
+  .mutation("toggleLike", {
+    input: z.object({
+      commentId: z.string(),
+      postId: z.string(),
+    }),
+    async resolve({ input, ctx }) {
+      const res = await ctx.prisma.comment.findUnique({
+        where: { id: input.commentId },
+        select: { userId: true }
+      });
+
+      const like = await ctx.prisma.like.findUnique({
+        where: { userId_commentId: { commentId: input.commentId, userId: ctx.session.user.id! } }
+      })
+
+      if (like === null) {
+        return await ctx.prisma.like.create({
+          data: {
+            commentId: input.commentId,
+            userId: ctx.session.user.id!
+          }
+        }).then(() => {
+          return { addLike: true }
+        });
+      } else {
+        return await ctx.prisma.like.delete({
+          where: {
+            userId_commentId: {
+              commentId: input.commentId,
+              userId: ctx.session.user.id!
+            }
+          }
+        }).then(() => {
+          return { addLike: false }
+        });
+      }
     }
   });
