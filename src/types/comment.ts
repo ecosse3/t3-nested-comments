@@ -7,6 +7,6 @@ export type Comment = {
     id: string
     name: string
   }
-  // likeCount: number
+  likeCount: number
   likedByMe?: boolean
 }
