@@ -12,6 +12,7 @@ import { usePost } from "#hooks/usePost";
 import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import superjson from 'superjson';
+import { Footer } from "#components/Footer";
 
 const Post: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ id }) => {
   const [error, setError] = useState("");
@@ -55,13 +56,14 @@ const Post: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
       </Head>
 
       <Header />
-      <main className={clsx('container max-w-2xl mx-auto my-8 flex flex-col p-4 md:p-0')}>
+      <main className={clsx('container max-w-2xl mx-auto my-8 flex flex-col p-4 md:p-0 flex-grow')}>
         <h1 className="text-3xl text-black font-bold">{post.data?.title}</h1>
         <p className="text-md text-black my-4 text-justify">{post.data?.body}</p>
         <h2 className="text-xl text-black font-bold">Comments</h2>
         {session ? <CommentForm onSubmit={handleCommentCreate} loading={createComment.isLoading} error={error} /> : <div className="text-red-400 text-md font-bold mb-4">You must be logged in to leave a comment</div>}
         <CommentList comments={rootComments} />
       </main>
+      <Footer />
     </>
   )
 }

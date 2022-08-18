@@ -8,6 +8,7 @@ import { appRouter } from "#server/router";
 import { prisma } from "#server/db/client";
 import { Header } from "#components/Header";
 import { PostCard } from "#components/PostCard";
+import { Footer } from "#components/Footer";
 
 const Home: NextPage = () => {
   // This query will be immediately available as it's prefetched.
@@ -22,7 +23,7 @@ const Home: NextPage = () => {
       </Head>
 
       <Header />
-      <main className={clsx('container max-w-3xl mx-auto flex flex-col items-center justify-center p-4 md:p-0 pt-8 md:pt-16')}>
+      <main className={clsx('container max-w-3xl mx-auto flex flex-col items-center p-4 md:p-0 pt-8 md:pt-16 flex-grow')}>
         <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
           List <span className="text-purple-300 drop-shadow-2xl">Posts</span>
         </h1>
@@ -37,6 +38,7 @@ const Home: NextPage = () => {
           ))}
         </div>
       </main>
+      <Footer />
     </>
   );
 };
