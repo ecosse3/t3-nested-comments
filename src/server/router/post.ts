@@ -52,7 +52,7 @@ export const postRouter = createRouter()
             const { _count, ...commentFields } = comment
             return {
               ...commentFields,
-              likedByMe: !!likes.find(like => like.commentId === comment.id),
+              likedByMe: !!likes.find(like => like.commentId === comment.id && like.userId === ctx.session?.user?.id),
               likeCount: _count.likes,
             }
           }),
